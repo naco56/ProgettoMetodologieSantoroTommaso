@@ -22,7 +22,7 @@ public class Nemico {
         this.tipo = tipo;
     }
 
-   
+
 
     public String getNome() {
         return nome;
