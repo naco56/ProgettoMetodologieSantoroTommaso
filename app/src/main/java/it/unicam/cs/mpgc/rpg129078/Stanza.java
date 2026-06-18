@@ -31,7 +31,7 @@ public class Stanza {
         public List<Object> getOggetti() {
             return oggetti;
         }
-        
+
 
         public void aggiungiNemico(Object nemico) {
             nemici.add(nemico);
