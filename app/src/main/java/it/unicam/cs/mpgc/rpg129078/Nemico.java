@@ -72,5 +72,11 @@ public class Nemico {
         this.tipo = tipo;
     }
 
+    public void attacca(Giocatore giocatore) {
+        int danno = this.attacco;
+
+        int nuovaVita = giocatore.getVitaCorrente() - danno;
+        giocatore.setVitaCorrente(nuovaVita);
+    }
 
 }

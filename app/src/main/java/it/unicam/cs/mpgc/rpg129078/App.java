@@ -30,5 +30,7 @@ public class App {
 
         System.out.println("Vita nemico dopo: " + nemico.getVitaCorrente());
 
+        
+
     }
 }
