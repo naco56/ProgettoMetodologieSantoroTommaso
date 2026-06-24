@@ -10,6 +10,14 @@ public class Giocatore {
     private int energiaMassima;
     private int energiaCorrente;
 
+    private Arma arma;
+
+    private Abilita abilita;
+
+    private Inventario inventario;
+
+
+
     public Giocatore(String nome, int vitaMassima, int energiaMassima) {
         this.nome = nome;
 
@@ -18,6 +26,8 @@ public class Giocatore {
 
         this.energiaMassima = energiaMassima;
         this.energiaCorrente = energiaMassima;
+
+        this.inventario = new Inventario();
     }
 
     public String getNome() {
