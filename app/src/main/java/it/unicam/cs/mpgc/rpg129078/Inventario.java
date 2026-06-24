@@ -5,22 +5,22 @@ import java.util.List;
 public class Inventario {
 
 
-    private List<Object> oggetti;
+    private List<String> oggetti = new ArrayList<>();
 
-    public Inventario() {
-        this.oggetti = new ArrayList<>();
-    }
-
-    public void aggiungiOggetto(Object oggetto) {
+    public void aggiungiOggetto(String oggetto) {
         oggetti.add(oggetto);
+        System.out.println("Aggiunto all'inventario: " + oggetto);
     }
 
-    public void rimuoviOggetto(Object oggetto) {
-        oggetti.remove(oggetto);
-    }
-
-    public List<Object> getOggetti() {
-        return oggetti;
+    public void mostraInventario() {
+        System.out.println("INVENTARIO ");
+        if (oggetti.isEmpty()) {
+            System.out.println("Vuoto");
+        } else {
+            for (String o : oggetti) {
+                System.out.println("- " + o);
+            }
+        }
     }
 
 

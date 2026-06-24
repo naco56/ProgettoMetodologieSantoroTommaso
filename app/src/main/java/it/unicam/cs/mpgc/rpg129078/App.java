@@ -4,6 +4,8 @@
 package it.unicam.cs.mpgc.rpg129078;
 import java.util.Scanner;
 
+import java.util.Scanner;
+
 public class App {
 
     public static void turnoCombattimento(Giocatore giocatore, Nemico nemico, Scanner scanner) {
@@ -25,7 +27,7 @@ public class App {
             System.out.println("Vita nemico: " + nemico.getVitaCorrente());
         }
 
-        else if (scelta == 2) {
+        if (scelta == 2) {
 
             System.out.println(">> Abilità");
 
@@ -37,15 +39,19 @@ public class App {
                         giocatore.getEnergiaCorrente() - abilita.costoEnergia()
                 );
 
-                System.out.println("Usi: " + abilita.nome());
-
                 abilita.usa(giocatore, nemico);
+
+                System.out.println("Usata abilità: " + abilita.nome());
+                System.out.println("Effetto: " + abilita.effetto());
 
             } else {
                 System.out.println("Energia insufficiente!");
             }
+
+            System.out.println("Vita nemico: " + nemico.getVitaCorrente());
         }
 
+        // 🔁 RISPOSTA NEMICO
         System.out.println("\n>> Nemico risponde");
 
         nemico.attacca(giocatore);
@@ -61,8 +67,8 @@ public class App {
                 "Impiegato",
                 100,
                 50,
-                new LaptopAziendale(),
-                new PausaCaffe()
+                new Penna(),
+                new PremioProduzione()
         );
 
         Nemico nemico = new Nemico(
@@ -79,8 +85,8 @@ public class App {
             turnoCombattimento(giocatore, nemico, scanner);
 
             System.out.println("\n--- STATO ---");
-            System.out.println("Giocatore: " + giocatore.getVitaCorrente());
-            System.out.println("Nemico: " + nemico.getVitaCorrente());
+            System.out.println("Giocatore HP: " + giocatore.getVitaCorrente());
+            System.out.println("Nemico HP: " + nemico.getVitaCorrente());
         }
 
         System.out.println("\n=== FINE COMBATTIMENTO ===");
@@ -94,4 +100,3 @@ public class App {
         scanner.close();
     }
 }
-

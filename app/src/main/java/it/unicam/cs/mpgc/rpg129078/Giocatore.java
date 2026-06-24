@@ -11,14 +11,12 @@ public class Giocatore {
     private int energiaCorrente;
 
     private Arma arma;
-
     private Abilita abilita;
 
     private Inventario inventario;
 
 
-
-    public Giocatore(String nome, int vitaMassima, int energiaMassima, Arma arma,  Abilita abilita) {
+    public Giocatore(String nome, int vitaMassima, int energiaMassima, Arma arma, Abilita abilita) {
         this.nome = nome;
 
         this.vitaMassima = vitaMassima;
@@ -32,6 +30,7 @@ public class Giocatore {
 
         this.inventario = new Inventario();
     }
+
 
     public String getNome() {
         return nome;
@@ -53,27 +52,6 @@ public class Giocatore {
         return energiaCorrente;
     }
 
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setVitaMassima(int vitaMassima) {
-        this.vitaMassima = vitaMassima;
-    }
-
-    public void setVitaCorrente(int vitaCorrente) {
-        this.vitaCorrente = vitaCorrente;
-    }
-
-    public void setEnergiaMassima(int energiaMassima) {
-        this.energiaMassima = energiaMassima;
-    }
-
-    public void setEnergiaCorrente(int energiaCorrente) {
-        this.energiaCorrente = energiaCorrente;
-    }
-
     public Arma getArma() {
         return arma;
     }
@@ -82,11 +60,51 @@ public class Giocatore {
         return abilita;
     }
 
-    public void attacca(Nemico nemico) {
-        int danno = arma.danno();
+    public Inventario getInventario() {
+        return inventario;
+    }
 
-        int nuovaVita = nemico.getVitaCorrente() - danno;
-        nemico.setVitaCorrente(nuovaVita);
+
+    public void setVitaCorrente(int vitaCorrente) {
+        this.vitaCorrente = vitaCorrente;
+    }
+
+    public void setEnergiaCorrente(int energiaCorrente) {
+        this.energiaCorrente = energiaCorrente;
+    }
+
+    public void setArma(Arma arma) {
+        this.arma = arma;
+    }
+
+    public void setAbilita(Abilita abilita) {
+        this.abilita = abilita;
+    }
+
+
+    public void setVitaMassima(int vitaMassima) {
+        this.vitaMassima = vitaMassima;
+
+        if (vitaCorrente > vitaMassima) {
+            vitaCorrente = vitaMassima;
+        }
+    }
+
+
+    public void attacca(Nemico nemico) {
+
+        if (arma == null) {
+            System.out.println("Nessuna arma equipaggiata!");
+            return;
+        }
+
+        int danno = arma.calcolaDanno();
+
+        nemico.setVitaCorrente(
+                nemico.getVitaCorrente() - danno
+        );
+
+        System.out.println("Attacco inflitto: " + danno);
     }
 
 }

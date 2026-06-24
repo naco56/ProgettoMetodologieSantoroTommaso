@@ -19,6 +19,15 @@ public class PremioProduzione implements Abilita {
 
     public void usa(Giocatore giocatore, Nemico nemico) {
 
+        int danno = effetto();
+
+        nemico.setVitaCorrente(
+                nemico.getVitaCorrente() - danno
+        );
+
+        giocatore.setVitaCorrente(
+                giocatore.getVitaCorrente() + (danno / 2)
+        );
 
     }
 
