@@ -82,6 +82,13 @@ public class Giocatore {
         return abilita;
     }
 
+    public void attacca(Nemico nemico) {
+        int danno = arma.danno();
+        nemico.setVitaCorrente(nemico.getVitaCorrente() - danno);
+
+        int nuovaVita = nemico.getVitaCorrente() - danno;
+        nemico.setVitaCorrente(nuovaVita);
+    }
 
 }
 

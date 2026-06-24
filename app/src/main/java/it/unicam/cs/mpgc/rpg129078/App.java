@@ -7,6 +7,28 @@ public class App {
 
     public static void main(String[] args) {
 
+        Giocatore giocatore = new Giocatore(
+                "Impiegato",
+                100,
+                50,
+                new LaptopAziendale(),
+                new PausaCaffe()
+        );
+
+        Nemico nemico = new Nemico(
+                "Capo Ufficio",
+                80,
+                15,
+                TipoNemico.NORMALE
+        );
+
+        System.out.println("=== COMBATTIMENTO ===");
+
+        System.out.println("Vita nemico prima: " + nemico.getVitaCorrente());
+
+        giocatore.attacca(nemico);
+
+        System.out.println("Vita nemico dopo: " + nemico.getVitaCorrente());
 
     }
 }
