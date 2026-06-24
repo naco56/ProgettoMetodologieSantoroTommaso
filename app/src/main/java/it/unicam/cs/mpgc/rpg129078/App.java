@@ -6,10 +6,7 @@ import java.util.Scanner;
 
 public class App {
 
-
-    public static void turnoCombattimento(Giocatore giocatore, Nemico nemico) {
-
-        Scanner scanner = new Scanner(System.in);
+    public static void turnoCombattimento(Giocatore giocatore, Nemico nemico, Scanner scanner) {
 
         System.out.println("\n=== TURNO DI COMBATTIMENTO ===");
 
@@ -20,17 +17,20 @@ public class App {
         int scelta = scanner.nextInt();
 
         if (scelta == 1) {
+
             System.out.println(">> Attacco");
+
             giocatore.attacca(nemico);
+
             System.out.println("Vita nemico: " + nemico.getVitaCorrente());
         }
 
-        if (scelta == 2) {
+        else if (scelta == 2) {
+
             System.out.println(">> Abilità");
 
             Abilita abilita = giocatore.getAbilita();
 
-            // controllo energia (semplice)
             if (giocatore.getEnergiaCorrente() >= abilita.costoEnergia()) {
 
                 giocatore.setEnergiaCorrente(
@@ -38,7 +38,8 @@ public class App {
                 );
 
                 System.out.println("Usi: " + abilita.nome());
-                System.out.println("Effetto: " + abilita.effetto());
+
+                abilita.usa(giocatore, nemico);
 
             } else {
                 System.out.println("Energia insufficiente!");
@@ -46,11 +47,15 @@ public class App {
         }
 
         System.out.println("\n>> Nemico risponde");
+
         nemico.attacca(giocatore);
+
         System.out.println("Vita giocatore: " + giocatore.getVitaCorrente());
     }
 
     public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
 
         Giocatore giocatore = new Giocatore(
                 "Impiegato",
@@ -67,22 +72,26 @@ public class App {
                 TipoNemico.NORMALE
         );
 
+        System.out.println("=== INIZIO COMBATTIMENTO ===");
+
         while (giocatore.getVitaCorrente() > 0 && nemico.getVitaCorrente() > 0) {
 
-            turnoCombattimento(giocatore, nemico);
+            turnoCombattimento(giocatore, nemico, scanner);
 
-            System.out.println("\nSTATO ");
+            System.out.println("\n--- STATO ---");
             System.out.println("Giocatore: " + giocatore.getVitaCorrente());
             System.out.println("Nemico: " + nemico.getVitaCorrente());
         }
 
-        System.out.println("\n FINE COMBATTIMENTO");
+        System.out.println("\n=== FINE COMBATTIMENTO ===");
 
-        if (giocatore.getVitaCorrente() <= 0) {
-            System.out.println("Hai perso!");
-        } else {
+        if (giocatore.getVitaCorrente() > 0) {
             System.out.println("Hai vinto!");
+        } else {
+            System.out.println("Hai perso!");
         }
-    }
 
+        scanner.close();
+    }
 }
+

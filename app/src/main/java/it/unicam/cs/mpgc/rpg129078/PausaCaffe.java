@@ -17,4 +17,14 @@ public class PausaCaffe implements Abilita{
         return 25;
     }
 
+
+    public void usa(Giocatore giocatore, Nemico nemico) {
+
+        giocatore.setVitaCorrente(
+                giocatore.getVitaCorrente() + effetto()
+        );
+
+    }
+
+
 }

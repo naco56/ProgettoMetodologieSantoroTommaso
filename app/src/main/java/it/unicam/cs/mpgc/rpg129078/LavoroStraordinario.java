@@ -17,4 +17,13 @@ public class LavoroStraordinario implements Abilita{
         return 40;
     }
 
+
+    public void usa(Giocatore giocatore, Nemico nemico) {
+
+        nemico.setVitaCorrente(
+                nemico.getVitaCorrente() - effetto()
+        );
+
+    }
+
 }

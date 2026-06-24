@@ -17,4 +17,10 @@ public class PremioProduzione implements Abilita {
         return 20;
     }
 
+    public void usa(Giocatore giocatore, Nemico nemico) {
+
+
+    }
+
+
 }

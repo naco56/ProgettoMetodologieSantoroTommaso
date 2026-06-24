@@ -7,4 +7,7 @@ public interface Abilita {
     int effetto();
 
     int costoEnergia();
+
+    void usa(Giocatore giocatore, Nemico nemico);
+
 }
