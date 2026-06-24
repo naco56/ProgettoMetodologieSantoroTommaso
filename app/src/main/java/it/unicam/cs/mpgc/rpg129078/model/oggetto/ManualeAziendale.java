@@ -1,4 +1,6 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.oggetto;
+
+import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
 
 public class ManualeAziendale implements Oggetto {
 

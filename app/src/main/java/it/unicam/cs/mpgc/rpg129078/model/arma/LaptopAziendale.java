@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.arma;
 
 public class LaptopAziendale implements Arma {
 

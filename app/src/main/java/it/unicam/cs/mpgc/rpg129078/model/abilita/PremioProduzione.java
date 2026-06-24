@@ -1,4 +1,7 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.abilita;
+
+import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
+import it.unicam.cs.mpgc.rpg129078.model.Nemico;
 
 public class PremioProduzione implements Abilita {
 

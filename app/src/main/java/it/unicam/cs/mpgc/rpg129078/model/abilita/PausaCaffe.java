@@ -1,6 +1,9 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.abilita;
 
-public class PausaCaffe implements Abilita{
+import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
+import it.unicam.cs.mpgc.rpg129078.model.Nemico;
+
+public class PausaCaffe implements Abilita {
 
     @Override
     public String nome() {

@@ -1,6 +1,9 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.oggetto;
 
-public class ChiavettaUsb implements Oggetto{
+import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
+import it.unicam.cs.mpgc.rpg129078.model.arma.Arma;
+
+public class ChiavettaUsb implements Oggetto {
 
     public String nome() {
         return "Chiavetta usb";

@@ -1,10 +1,11 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.arma;
 
-public class BadgeAziendale implements Arma {
+public class Penna implements Arma {
+
 
     private int livello = 1;
 
-    private final int dannoBase = 8;
+    private final int dannoBase = 5;
 
     @Override
     public int getDannoBase() {
@@ -20,4 +21,5 @@ public class BadgeAziendale implements Arma {
     public void setLivello(int livello) {
         this.livello = livello;
     }
+
 }

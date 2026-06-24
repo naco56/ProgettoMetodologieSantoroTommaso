@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.arma;
 
 public interface Arma {
 
@@ -6,7 +6,7 @@ public interface Arma {
 
     int getLivello();
 
-    void setLivello(int livello) {
+    default void setLivello(int livello) {
         if (livello < 1) throw new IllegalArgumentException("Livello minimo: 1");
     }
 

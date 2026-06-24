@@ -1,6 +1,8 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model.oggetto;
 
-public class Snack implements Oggetto{
+import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
+
+public class Snack implements Oggetto {
 
     public String nome() {
         return "Snack";

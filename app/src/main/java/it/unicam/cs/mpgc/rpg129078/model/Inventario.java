@@ -1,4 +1,6 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model;
+import it.unicam.cs.mpgc.rpg129078.model.oggetto.Oggetto;
+
 import java.util.ArrayList;
 import java.util.List;
 

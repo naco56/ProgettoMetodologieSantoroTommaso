@@ -1,4 +1,7 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model;
+
+import it.unicam.cs.mpgc.rpg129078.model.abilita.Abilita;
+import it.unicam.cs.mpgc.rpg129078.model.arma.Arma;
 
 public class Giocatore {
 
