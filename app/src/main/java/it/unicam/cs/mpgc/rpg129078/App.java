@@ -8,6 +8,11 @@ import it.unicam.cs.mpgc.rpg129078.model.TipoNemico;
 import it.unicam.cs.mpgc.rpg129078.model.abilita.Abilita;
 import it.unicam.cs.mpgc.rpg129078.model.abilita.PremioProduzione;
 import it.unicam.cs.mpgc.rpg129078.model.arma.Penna;
+import it.unicam.cs.mpgc.rpg129078.model.arma.LaptopAziendale;
+import it.unicam.cs.mpgc.rpg129078.model.abilita.PausaCaffe;
+import it.unicam.cs.mpgc.rpg129078.model.oggetto.Snack;
+import it.unicam.cs.mpgc.rpg129078.model.oggetto.ChiavettaUsb;
+
 
 import java.util.Scanner;
 
@@ -15,69 +20,22 @@ import java.util.Scanner;
 
 public class App {
 
-    public static void turnoCombattimento(Giocatore giocatore, Nemico nemico, Scanner scanner) {
-
-        System.out.println("\n=== TURNO DI COMBATTIMENTO ===");
-
-        System.out.println("Scegli azione:");
-        System.out.println("1 - Attacca");
-        System.out.println("2 - Abilità");
-
-        int scelta = scanner.nextInt();
-
-        if (scelta == 1) {
-
-            System.out.println(">> Attacco");
-
-            giocatore.attacca(nemico);
-
-            System.out.println("Vita nemico: " + nemico.getVitaCorrente());
-        }
-
-        if (scelta == 2) {
-
-            System.out.println(">> Abilità");
-
-            Abilita abilita = giocatore.getAbilita();
-
-            if (giocatore.getEnergiaCorrente() >= abilita.costoEnergia()) {
-
-                giocatore.setEnergiaCorrente(
-                        giocatore.getEnergiaCorrente() - abilita.costoEnergia()
-                );
-
-                abilita.usa(giocatore, nemico);
-
-                System.out.println("Usata abilità: " + abilita.nome());
-                System.out.println("Effetto: " + abilita.effetto());
-
-            } else {
-                System.out.println("Energia insufficiente!");
-            }
-
-            System.out.println("Vita nemico: " + nemico.getVitaCorrente());
-        }
-
-        // 🔁 RISPOSTA NEMICO
-        System.out.println("\n>> Nemico risponde");
-
-        nemico.attacca(giocatore);
-
-        System.out.println("Vita giocatore: " + giocatore.getVitaCorrente());
-    }
-
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
 
+        System.out.println("=== TEST INVENTARIO RPG ===");
+
+        // 👤 GIOCATORE
         Giocatore giocatore = new Giocatore(
                 "Impiegato",
                 100,
                 50,
-                new Penna(),
-                new PremioProduzione()
+                new LaptopAziendale(),
+                new PausaCaffe()
         );
 
+        // ⚔️ NEMICO
         Nemico nemico = new Nemico(
                 "Capo Ufficio",
                 80,
@@ -85,23 +43,81 @@ public class App {
                 TipoNemico.NORMALE
         );
 
-        System.out.println("=== INIZIO COMBATTIMENTO ===");
+        // 🎒 INVENTARIO INIZIALE
+        giocatore.getInventario().aggiungiOggetto(new Snack());
+        giocatore.getInventario().aggiungiOggetto(new ChiavettaUsb());
+
+        System.out.println("\n=== START COMBAT ===");
 
         while (giocatore.getVitaCorrente() > 0 && nemico.getVitaCorrente() > 0) {
 
-            turnoCombattimento(giocatore, nemico, scanner);
+            System.out.println("\n=== TURNO ===");
 
-            System.out.println("\n--- STATO ---");
-            System.out.println("Giocatore HP: " + giocatore.getVitaCorrente());
-            System.out.println("Nemico HP: " + nemico.getVitaCorrente());
+            System.out.println("1 - Attacca");
+            System.out.println("2 - Abilità");
+            System.out.println("3 - Inventario");
+
+            int scelta = scanner.nextInt();
+
+            switch (scelta) {
+
+                case 1 -> {
+                    System.out.println(">> ATTACCO");
+                    giocatore.attacca(nemico);
+                    System.out.println("Vita nemico: " + nemico.getVitaCorrente());
+                }
+
+                case 2 -> {
+                    System.out.println(">> ABILITÀ");
+
+                    PausaCaffe abilita = (PausaCaffe) giocatore.getAbilita();
+
+                    if (giocatore.getEnergiaCorrente() >= abilita.costoEnergia()) {
+
+                        giocatore.setEnergiaCorrente(
+                                giocatore.getEnergiaCorrente() - abilita.costoEnergia()
+                        );
+
+                        abilita.usa(giocatore, nemico);
+
+                        System.out.println("Usata abilità!");
+                    } else {
+                        System.out.println("Energia insufficiente!");
+                    }
+                }
+
+                case 3 -> {
+                    System.out.println(">> INVENTARIO");
+
+                    giocatore.getInventario().mostraInventario();
+
+                    System.out.println("Scegli oggetto da usare (-1 per annullare):");
+
+                    int index = scanner.nextInt();
+
+                    if (index != -1) {
+                        giocatore.getInventario().usaOggetto(index, giocatore);
+                    }
+                }
+
+                default -> System.out.println("Scelta non valida!");
+            }
+
+            // 🔁 turno nemico
+            if (nemico.getVitaCorrente() > 0) {
+                System.out.println("\n>> NEMICO ATTACCA");
+                nemico.attacca(giocatore);
+                System.out.println("Vita giocatore: " + giocatore.getVitaCorrente());
+            }
         }
 
+        // 🏁 FINE
         System.out.println("\n=== FINE COMBATTIMENTO ===");
 
         if (giocatore.getVitaCorrente() > 0) {
-            System.out.println("Hai vinto!");
+            System.out.println("HAI VINTO!");
         } else {
-            System.out.println("Hai perso!");
+            System.out.println("HAI PERSO!");
         }
 
         scanner.close();
