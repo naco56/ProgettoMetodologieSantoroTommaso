@@ -11,4 +11,10 @@ public class PremioProduzione implements Abilita {
     public int effetto() {
         return 10;
     }
+
+    @Override
+    public int costoEnergia() {
+        return 20;
+    }
+
 }

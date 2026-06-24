@@ -5,4 +5,6 @@ public interface Abilita {
     String nome();
 
     int effetto();
+
+    int costoEnergia();
 }

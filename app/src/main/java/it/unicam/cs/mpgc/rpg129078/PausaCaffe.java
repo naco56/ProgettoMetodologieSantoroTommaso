@@ -12,4 +12,9 @@ public class PausaCaffe implements Abilita{
         return 15;
     }
 
+    @Override
+    public int costoEnergia() {
+        return 25;
+    }
+
 }
