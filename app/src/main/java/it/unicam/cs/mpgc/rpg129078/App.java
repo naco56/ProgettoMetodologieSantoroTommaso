@@ -67,7 +67,22 @@ public class App {
                 TipoNemico.NORMALE
         );
 
-        turnoCombattimento(giocatore, nemico);
+        while (giocatore.getVitaCorrente() > 0 && nemico.getVitaCorrente() > 0) {
+
+            turnoCombattimento(giocatore, nemico);
+
+            System.out.println("\nSTATO ");
+            System.out.println("Giocatore: " + giocatore.getVitaCorrente());
+            System.out.println("Nemico: " + nemico.getVitaCorrente());
+        }
+
+        System.out.println("\n FINE COMBATTIMENTO");
+
+        if (giocatore.getVitaCorrente() <= 0) {
+            System.out.println("Hai perso!");
+        } else {
+            System.out.println("Hai vinto!");
+        }
     }
 
 }
