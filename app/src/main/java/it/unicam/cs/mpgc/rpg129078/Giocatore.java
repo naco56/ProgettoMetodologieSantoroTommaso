@@ -18,7 +18,7 @@ public class Giocatore {
 
 
 
-    public Giocatore(String nome, int vitaMassima, int energiaMassima) {
+    public Giocatore(String nome, int vitaMassima, int energiaMassima, Arma arma,  Abilita abilita) {
         this.nome = nome;
 
         this.vitaMassima = vitaMassima;
@@ -26,6 +26,9 @@ public class Giocatore {
 
         this.energiaMassima = energiaMassima;
         this.energiaCorrente = energiaMassima;
+
+        this.arma = arma;
+        this.abilita = abilita;
 
         this.inventario = new Inventario();
     }
@@ -69,6 +72,14 @@ public class Giocatore {
 
     public void setEnergiaCorrente(int energiaCorrente) {
         this.energiaCorrente = energiaCorrente;
+    }
+
+    public Arma getArma() {
+        return arma;
+    }
+
+    public Abilita getAbilita() {
+        return abilita;
     }
 
 
