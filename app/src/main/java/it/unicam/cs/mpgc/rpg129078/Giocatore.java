@@ -66,11 +66,11 @@ public class Giocatore {
 
 
     public void setVitaCorrente(int vitaCorrente) {
-        this.vitaCorrente = vitaCorrente;
+        this.vitaCorrente = Math.max(0, Math.min(vitaCorrente, vitaMassima));
     }
 
     public void setEnergiaCorrente(int energiaCorrente) {
-        this.energiaCorrente = energiaCorrente;
+        this.energiaCorrente = Math.max(0, Math.min(energiaCorrente, energiaMassima));
     }
 
     public void setArma(Arma arma) {

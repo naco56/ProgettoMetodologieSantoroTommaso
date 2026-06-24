@@ -6,40 +6,36 @@ public class Stanza {
 
 
 
-        private String nome;
+    private String nome;
 
-        private List<Object> nemici;
+    private List<Nemico> nemici;
+    private List<Oggetto> oggetti;
 
-        private List<Object> oggetti;
+    public Stanza(String nome) {
+        this.nome = nome;
+        this.nemici = new ArrayList<>();
+        this.oggetti = new ArrayList<>();
+    }
 
+    public String getNome() {
+        return nome;
+    }
 
-        public Stanza(String nome) {
-            this.nome = nome;
-            this.nemici = new ArrayList<>();
-            this.oggetti = new ArrayList<>();
+    public List<Nemico> getNemici() {
+        return nemici;
+    }
 
-        }
+    public List<Oggetto> getOggetti() {
+        return oggetti;
+    }
 
-        public String getNome() {
-            return nome;
-        }
+    public void aggiungiNemico(Nemico nemico) {
+        nemici.add(nemico);
+    }
 
-        public List<Object> getNemici() {
-            return nemici;
-        }
-
-        public List<Object> getOggetti() {
-            return oggetti;
-        }
-
-
-        public void aggiungiNemico(Object nemico) {
-            nemici.add(nemico);
-        }
-
-        public void aggiungiOggetto(Object oggetto) {
-            oggetti.add(oggetto);
-        }
+    public void aggiungiOggetto(Oggetto oggetto) {
+        oggetti.add(oggetto);
+    }
 }
 
 

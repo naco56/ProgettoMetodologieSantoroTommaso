@@ -5,21 +5,17 @@ import java.util.List;
 public class Inventario {
 
 
-    private List<String> oggetti = new ArrayList<>();
+    private List<Oggetto> oggetti = new ArrayList<>();
 
-    public void aggiungiOggetto(String oggetto) {
+    public void aggiungiOggetto(Oggetto oggetto) {
         oggetti.add(oggetto);
         System.out.println("Aggiunto all'inventario: " + oggetto);
     }
 
-    public void mostraInventario() {
-        System.out.println("INVENTARIO ");
-        if (oggetti.isEmpty()) {
-            System.out.println("Vuoto");
-        } else {
-            for (String o : oggetti) {
-                System.out.println("- " + o);
-            }
+    public void usaOggetto(int indice, Giocatore giocatore) {
+        if (indice >= 0 && indice < oggetti.size()) {
+            oggetti.get(indice).usa(giocatore);
+            oggetti.remove(indice);
         }
     }
 

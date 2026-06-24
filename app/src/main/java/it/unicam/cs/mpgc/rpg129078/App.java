@@ -4,7 +4,7 @@
 package it.unicam.cs.mpgc.rpg129078;
 import java.util.Scanner;
 
-import java.util.Scanner;
+
 
 public class App {
 
