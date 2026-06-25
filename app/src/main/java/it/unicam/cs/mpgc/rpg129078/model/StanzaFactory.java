@@ -1,9 +1,5 @@
-package it.unicam.cs.mpgc.rpg129078;
+package it.unicam.cs.mpgc.rpg129078.model;
 
-import it.unicam.cs.mpgc.rpg129078.model.Nemico;
-import it.unicam.cs.mpgc.rpg129078.model.Stanza;
-import it.unicam.cs.mpgc.rpg129078.model.TipoNemico;
-import it.unicam.cs.mpgc.rpg129078.model.oggetto.ChiavettaUsb;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.Snack;
 
 import java.util.ArrayList;

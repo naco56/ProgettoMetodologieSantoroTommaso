@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg129078.model.arma;
 
-public class LaptopAziendale implements Arma {
+public class LaptopAziendale implements Arma,Potenziabile {
 
     private int livello = 1;
 

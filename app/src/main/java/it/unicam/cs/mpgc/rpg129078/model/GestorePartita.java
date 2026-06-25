@@ -1,7 +1,4 @@
-package it.unicam.cs.mpgc.rpg129078;
-
-import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
-import it.unicam.cs.mpgc.rpg129078.model.Stanza;
+package it.unicam.cs.mpgc.rpg129078.model;
 
 import java.util.ArrayList;
 import java.util.List;

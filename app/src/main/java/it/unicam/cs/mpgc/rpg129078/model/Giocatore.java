@@ -19,7 +19,7 @@ public class Giocatore {
     private Inventario inventario;
 
 
-    public Giocatore(String nome, int vitaMassima, int energiaMassima, Arma arma, Abilita abilita) {
+    public Giocatore(String nome, int vitaMassima, int energiaMassima, Arma arma, Abilita abilita,Inventario inventario) {
         this.nome = nome;
 
         this.vitaMassima = vitaMassima;
@@ -31,7 +31,7 @@ public class Giocatore {
         this.arma = arma;
         this.abilita = abilita;
 
-        this.inventario = new Inventario();
+        this.inventario = inventario;
     }
 
 

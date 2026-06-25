@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg129078.model.arma;
 
-public class Penna implements Arma {
+public class Penna implements Arma,Potenziabile {
 
 
     private int livello = 1;
