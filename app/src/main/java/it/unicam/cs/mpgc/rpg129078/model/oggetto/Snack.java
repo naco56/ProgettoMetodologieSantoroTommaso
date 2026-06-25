@@ -4,6 +4,8 @@ import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
 
 public class Snack implements Oggetto {
 
+
+
     public String nome() {
         return "Snack";
     }
