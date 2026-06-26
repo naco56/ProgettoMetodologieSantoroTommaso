@@ -66,4 +66,8 @@ public class Inventario {
         return oggetti.size() >= 6;
     }
 
+    public List<Oggetto> getOggetti() {
+        return oggetti;
+    }
+
 }
