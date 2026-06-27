@@ -37,10 +37,9 @@ java {
 application {
     // Define the main class for the application.
     mainClass = 'it.unicam.cs.mpgc.rpg129078.App'
+    run{
+        standardInput = System.in
+    }
 }
 
-tasks.named('run') {
-    // Use JUnit Platform for unit tests.
-    standardInput = System.in
 
-}
