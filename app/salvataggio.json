@@ -1,0 +1,17 @@
+{
+  "nomeGiocatore": "Impiegato",
+  "vitaCorrente": 57,
+  "vitaMassima": 100,
+  "energiaCorrente": 50,
+  "energiaMassima": 50,
+  "armaNome": "LaptopAziendale",
+  "armaLivello": 1,
+  "abilitaNome": "PausaCaffe",
+  "inventario": [
+    "Snack",
+    "ChiavettaUsb",
+    "Snack",
+    "Snack"
+  ],
+  "stanzaCorrente": 3
+}
