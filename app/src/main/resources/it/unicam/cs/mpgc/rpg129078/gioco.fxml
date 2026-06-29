@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefWidth="600" prefHeight="400"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="it.unicam.cs.mpgc.rpg129078.gui.GiocoController">
+
+
+    <top>
+        <VBox spacing="5" style="-fx-padding: 10;">
+            <Label fx:id="lblStanza" text="Stanza"
+                   style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+            <HBox spacing="20">
+                <Label fx:id="lblGiocatore" text="[Giocatore] HP: - | Energia: -"/>
+                <Label fx:id="lblNemico" text="[Nemico] HP: -"/>
+            </HBox>
+        </VBox>
+    </top>
+
+
+    <center>
+        <TextArea fx:id="logArea"
+                  editable="false"
+                  wrapText="true"
+                  style="-fx-padding: 10;"/>
+    </center>
+
+    <!-- PULSANTI AZIONE IN BASSO -->
+    <bottom>
+        <VBox spacing="8" style="-fx-padding: 10;">
+            <HBox spacing="10">
+                <Button fx:id="btnAttacca" text="Attacca"
+                        prefWidth="130" onAction="#handleAttacca"/>
+                <Button fx:id="btnAbilita" text="Abilita"
+                        prefWidth="130" onAction="#handleAbilita"/>
+                <Button fx:id="btnInventario" text="Inventario"
+                        prefWidth="130" onAction="#handleInventario"/>
+                <Button fx:id="btnSalvaEsci" text="Salva ed Esci"
+                        prefWidth="130" onAction="#handleSalvaEsci"/>
+            </HBox>
+        </VBox>
+    </bottom>
+
+</BorderPane>

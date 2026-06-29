@@ -74,6 +74,10 @@ public class GestorePartita {
                 .stream()
                 .map(o -> o.getClass().getSimpleName())
                 .toList();
+        stato.hpNemiciStanzaCorrente = getStanzaAttuale().getNemici()
+                .stream()
+                .map(Nemico::getVitaCorrente)
+                .toList();
         return stato;
     }
 
@@ -101,6 +105,12 @@ public class GestorePartita {
             partita.aggiungiStanza(s);
         }
         partita.stanzaCorrente = stato.stanzaCorrente;
+        if (stato.hpNemiciStanzaCorrente != null) {
+            List<Nemico> nemici = partita.getStanzaAttuale().getNemici();
+            for (int i = 0; i < Math.min(nemici.size(), stato.hpNemiciStanzaCorrente.size()); i++) {
+                nemici.get(i).setVitaCorrente(stato.hpNemiciStanzaCorrente.get(i));
+            }
+        }
         return partita;
     }
 

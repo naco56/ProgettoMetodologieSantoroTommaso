@@ -13,5 +13,6 @@ public class StatoPartita {
     public String abilitaNome;
     public List<String> inventario;
     public int stanzaCorrente;
+    public List<Integer> hpNemiciStanzaCorrente;
 
 }
