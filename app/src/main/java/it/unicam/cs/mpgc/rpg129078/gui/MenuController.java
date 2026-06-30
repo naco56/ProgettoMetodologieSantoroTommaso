@@ -29,16 +29,12 @@ public class MenuController {
     @FXML
     private void handleNuovaPartita(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/it/unicam/cs/mpgc/rpg129078/gioco.fxml")
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/it/unicam/cs/mpgc/rpg129078/creaPersonaggio.fxml")
             );
-            Parent root = loader.load();
-            GiocoController controller = loader.getController();
-            controller.iniziaNuovaPartita();
-
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
                     .getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
+            stage.setScene(new Scene(root, 400, 350));
         } catch (Exception e) {
             e.printStackTrace();
         }

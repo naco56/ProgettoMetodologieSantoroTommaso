@@ -41,10 +41,10 @@ public class GiocoController {
     private final SalvataggioService salvataggioService = new GsonSalvataggioService();
 
 
-    public void iniziaNuovaPartita() {
+    public void iniziaNuovaPartita(String nome, Abilita abilita) {
         Giocatore giocatore = new Giocatore(
-                "Impiegato", 100, 50,
-                new LaptopAziendale(), new PausaCaffe(), new Inventario()
+                nome, 100, 50,
+                new LaptopAziendale(), abilita, new Inventario()
         );
         giocatore.getInventario().aggiungiOggetto(new Snack());
         giocatore.getInventario().aggiungiOggetto(new ChiavettaUsb());

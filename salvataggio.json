@@ -1,18 +1,20 @@
 {
-  "nomeGiocatore": "Impiegato",
-  "vitaCorrente": 95,
+  "nomeGiocatore": "lello",
+  "vitaCorrente": 87,
   "vitaMassima": 100,
   "energiaCorrente": 50,
   "energiaMassima": 50,
   "armaNome": "LaptopAziendale",
   "armaLivello": 1,
-  "abilitaNome": "PausaCaffe",
+  "abilitaNome": "PremioProduzione",
   "inventario": [
     "Snack",
-    "ChiavettaUsb"
+    "ChiavettaUsb",
+    "Snack"
   ],
-  "stanzaCorrente": 0,
+  "stanzaCorrente": 1,
   "hpNemiciStanzaCorrente": [
-    5
+    20,
+    35
   ]
 }
