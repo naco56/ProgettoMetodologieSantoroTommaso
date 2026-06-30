@@ -44,11 +44,6 @@ public class Nemico {
         return tipo;
     }
 
-    // ===== SETTER =====
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 
     public void setVitaMassima(int vitaMassima) {
         this.vitaMassima = Math.max(0, vitaMassima);
@@ -68,9 +63,6 @@ public class Nemico {
         this.attacco = Math.max(0, attacco);
     }
 
-    public void setTipo(TipoNemico tipo) {
-        this.tipo = tipo;
-    }
 
     public void attacca(Giocatore giocatore) {
         int danno = this.attacco;

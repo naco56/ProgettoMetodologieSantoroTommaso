@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.scene.Node;
 
 /**
   Controller della schermata di creazione personaggio.
@@ -65,16 +66,9 @@ public class CreaPersonaggioController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/it/unicam/cs/mpgc/rpg129078/gioco.fxml")
-            );
-            Parent root = loader.load();
-            GiocoController controller = loader.getController();
+            GiocoController controller = SceneUtils.cambiaScena((Node) event.getSource(),
+                    "/it/unicam/cs/mpgc/rpg129078/gioco.fxml");
             controller.iniziaNuovaPartita(nome, abilita);
-
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
-                    .getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,12 +77,8 @@ public class CreaPersonaggioController {
     @FXML
     private void handleIndietro(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/it/unicam/cs/mpgc/rpg129078/menu.fxml")
-            );
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
-                    .getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 300));
+            SceneUtils.cambiaScena((Node) event.getSource(),
+                    "/it/unicam/cs/mpgc/rpg129078/menu.fxml");
         } catch (Exception e) {
             e.printStackTrace();
         }

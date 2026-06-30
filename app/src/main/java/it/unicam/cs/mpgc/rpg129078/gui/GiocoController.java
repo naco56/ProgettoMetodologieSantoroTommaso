@@ -1,14 +1,11 @@
 package it.unicam.cs.mpgc.rpg129078.gui;
 
-import it.unicam.cs.mpgc.rpg129078.model.*;
+import it.unicam.cs.mpgc.rpg129078.applicazione.PartitaService;
+import it.unicam.cs.mpgc.rpg129078.model.Giocatore;
+import it.unicam.cs.mpgc.rpg129078.model.Nemico;
 import it.unicam.cs.mpgc.rpg129078.model.abilita.Abilita;
-import it.unicam.cs.mpgc.rpg129078.model.abilita.PausaCaffe;
-import it.unicam.cs.mpgc.rpg129078.model.arma.LaptopAziendale;
-import it.unicam.cs.mpgc.rpg129078.model.oggetto.ChiavettaUsb;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.Oggetto;
-import it.unicam.cs.mpgc.rpg129078.model.oggetto.Snack;
 import it.unicam.cs.mpgc.rpg129078.persistenza.GsonSalvataggioService;
-import it.unicam.cs.mpgc.rpg129078.persistenza.SalvataggioService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,13 +13,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
-import java.util.Iterator;
+import javafx.scene.Node;
 import java.util.List;
 
 /**
- * Controller della schermata di gioco.
- * Gestisce il combattimento turno per turno e la progressione tra le stanze.
+ * Controller della schermata di gioco (solo presentazione).
+ * Tutta la logica di gioco è delegata a PartitaService, in modo che
+ * non sia legata a JavaFX e sia riusabile da altre interfacce future.
  */
 public class GiocoController {
 
@@ -35,128 +32,38 @@ public class GiocoController {
     @FXML private Button btnInventario;
     @FXML private Button btnSalvaEsci;
 
-    private GestorePartita partita;
-    private Nemico nemicoCorrente;
-    private Iterator<Nemico> nemiciIterator;
-    private final SalvataggioService salvataggioService = new GsonSalvataggioService();
+    private final PartitaService service = new PartitaService(new GsonSalvataggioService());
 
+    @FXML
+    public void initialize() {
+        service.setLogger(this::log);
+    }
 
     public void iniziaNuovaPartita(String nome, Abilita abilita) {
-        Giocatore giocatore = new Giocatore(
-                nome, 100, 50,
-                new LaptopAziendale(), abilita, new Inventario()
-        );
-        giocatore.getInventario().aggiungiOggetto(new Snack());
-        giocatore.getInventario().aggiungiOggetto(new ChiavettaUsb());
-
-        partita = new GestorePartita(giocatore);
-        for (Stanza s : StanzaFactory.creaCampagna()) {
-            partita.aggiungiStanza(s);
-        }
-        iniziaStanza();
+        service.nuovaPartita(nome, abilita);
+        aggiornaUI();
     }
-
 
     public void caricaPartita() {
-        partita = GestorePartita.ripristinaDaStato(salvataggioService.carica());
-        iniziaStanza();
-    }
-
-
-    private void iniziaStanza() {
-        Stanza stanza = partita.getStanzaAttuale();
-        lblStanza.setText("Stanza " + partita.getNumeroStanzaCorrente()
-                + "/" + partita.getTotaleStanze() + ": " + stanza.getNome()
-                + (partita.isFinale() ? "  *** BOSS ***" : ""));
-
-        nemiciIterator = stanza.getNemici().iterator();
-        log("Sei entrato in: " + stanza.getNome());
-        prossimoNemico();
-    }
-
-
-    private void prossimoNemico() {
-        while (nemiciIterator.hasNext()) {
-            Nemico n = nemiciIterator.next();
-            if (n.getVitaCorrente() > 0) {
-                nemicoCorrente = n;
-                log("\nAppare: " + n.getNome() + " | HP: " + n.getVitaCorrente());
-                aggiornaUI();
-                return;
-            }
-        }
-        stanzaCompletata();
-    }
-
-
-    private void stanzaCompletata() {
-        log("\nStanza completata!");
-
-        for (Oggetto o : partita.getStanzaAttuale().getOggetti()) {
-            partita.getGiocatore().getInventario().aggiungiOggetto(o);
-            log("Hai trovato: " + o.nome());
-        }
-
-        if (partita.isFinale()) {
-            mostraFinePartita(true);
-            return;
-        }
-
-        partita.avanza();
-        iniziaStanza();
-    }
-
-
-    private void eseguiTurno(Runnable azioneGiocatore) {
-        if (nemicoCorrente == null || partita.getGiocatore().getVitaCorrente() <= 0) return;
-
-        azioneGiocatore.run();
+        service.caricaPartita();
         aggiornaUI();
-
-        if (nemicoCorrente.getVitaCorrente() <= 0) {
-            log(">> " + nemicoCorrente.getNome() + " sconfitto!");
-            prossimoNemico();
-            return;
-        }
-
-        nemicoCorrente.attacca(partita.getGiocatore());
-        log(">> " + nemicoCorrente.getNome() + " ti attacca! HP rimasti: "
-                + partita.getGiocatore().getVitaCorrente());
-        aggiornaUI();
-
-        if (partita.getGiocatore().getVitaCorrente() <= 0) {
-            mostraFinePartita(false);
-        }
     }
 
     @FXML
     private void handleAttacca(ActionEvent event) {
-        eseguiTurno(() -> {
-            partita.getGiocatore().attacca(nemicoCorrente);
-            log(">> Attacchi " + nemicoCorrente.getNome()
-                    + "! HP rimasti: " + nemicoCorrente.getVitaCorrente());
-        });
+        service.attacca();
+        dopoAzione();
     }
 
     @FXML
     private void handleAbilita(ActionEvent event) {
-        eseguiTurno(() -> {
-            Giocatore g = partita.getGiocatore();
-            Abilita abilita = g.getAbilita();
-            if (g.getEnergiaCorrente() >= abilita.costoEnergia()) {
-                g.setEnergiaCorrente(g.getEnergiaCorrente() - abilita.costoEnergia());
-                abilita.usa(g, nemicoCorrente);
-                log(">> Usi " + abilita.nome() + "! HP nemico: "
-                        + nemicoCorrente.getVitaCorrente());
-            } else {
-                log(">> Energia insufficiente! Turno perso.");
-            }
-        });
+        service.usaAbilita();
+        dopoAzione();
     }
 
     @FXML
     private void handleInventario(ActionEvent event) {
-        List<Oggetto> oggetti = partita.getGiocatore().getInventario().getOggetti();
+        List<Oggetto> oggetti = service.getInventario();
 
         if (oggetti.isEmpty()) {
             log(">> Inventario vuoto!");
@@ -175,22 +82,28 @@ public class GiocoController {
             List<String> nomi = oggetti.stream().map(Oggetto::nome).toList();
             int idx = nomi.indexOf(nomeOggetto);
             if (idx >= 0) {
-                eseguiTurno(() -> {
-                    partita.getGiocatore().getInventario().usaOggetto(idx, partita.getGiocatore());
-                    log(">> Usi " + nomeOggetto + "!");
-                });
+                service.usaOggetto(idx);
+                dopoAzione();
             }
         });
     }
 
     @FXML
     private void handleSalvaEsci(ActionEvent event) {
-        salvataggioService.salva(partita.esportaStato());
+        service.salva();
         log("Partita salvata!");
         tornaAlMenu(event);
     }
 
-    /** Mostra il dialogo di fine partita e torna al menu */
+    private void dopoAzione() {
+        aggiornaUI();
+        if (service.isPartitaPersa()) {
+            mostraFinePartita(false);
+        } else if (service.isPartitaVinta()) {
+            mostraFinePartita(true);
+        }
+    }
+
     private void mostraFinePartita(boolean vittoria) {
         abilitaPulsanti(false);
         log(vittoria ? "\n=== HAI VINTO! ===" : "\n=== HAI PERSO! Sei stato licenziato. ===");
@@ -203,39 +116,38 @@ public class GiocoController {
         alert.showAndWait();
 
         try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/it/unicam/cs/mpgc/rpg129078/menu.fxml")
-            );
-            Stage stage = (Stage) logArea.getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 300));
+            SceneUtils.cambiaScena(logArea, "/it/unicam/cs/mpgc/rpg129078/menu.fxml");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     private void tornaAlMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/it/unicam/cs/mpgc/rpg129078/menu.fxml")
-            );
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 300));
+            SceneUtils.cambiaScena((Node) event.getSource(),
+                    "/it/unicam/cs/mpgc/rpg129078/menu.fxml");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void aggiornaUI() {
-        Giocatore g = partita.getGiocatore();
+        Giocatore g = service.getGiocatore();
+        lblStanza.setText("Stanza " + service.getNumeroStanzaCorrente()
+                + "/" + service.getTotaleStanze() + ": " + service.getNomeStanzaCorrente()
+                + (service.isStanzaBoss() ? "  *** BOSS ***" : ""));
+
         lblGiocatore.setText("[" + g.getNome() + "] HP: " + g.getVitaCorrente()
                 + "/" + g.getVitaMassima() + " | Energia: " + g.getEnergiaCorrente()
                 + "/" + g.getEnergiaMassima()
                 + " | " + g.getArma().getClass().getSimpleName()
                 + " (danno: " + g.getArma().calcolaDanno() + ")");
 
-        if (nemicoCorrente != null && nemicoCorrente.getVitaCorrente() > 0) {
-            lblNemico.setText("[" + nemicoCorrente.getNome() + "] HP: "
-                    + nemicoCorrente.getVitaCorrente() + "/" + nemicoCorrente.getVitaMassima());
+        Nemico n = service.getNemicoCorrente();
+        if (n != null && n.getVitaCorrente() > 0) {
+            lblNemico.setText("[" + n.getNome() + "] HP: "
+                    + n.getVitaCorrente() + "/" + n.getVitaMassima());
         } else {
             lblNemico.setText("");
         }

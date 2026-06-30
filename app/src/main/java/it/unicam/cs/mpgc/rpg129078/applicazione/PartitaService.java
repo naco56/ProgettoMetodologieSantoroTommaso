@@ -3,40 +3,47 @@ package it.unicam.cs.mpgc.rpg129078.applicazione;
 import it.unicam.cs.mpgc.rpg129078.model.*;
 import it.unicam.cs.mpgc.rpg129078.model.abilita.Abilita;
 import it.unicam.cs.mpgc.rpg129078.model.arma.LaptopAziendale;
-import it.unicam.cs.mpgc.rpg129078.model.abilita.PausaCaffe;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.ChiavettaUsb;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.Oggetto;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.Snack;
-import it.unicam.cs.mpgc.rpg129078.persistenza.GsonSalvataggioService;
 import it.unicam.cs.mpgc.rpg129078.persistenza.SalvataggioService;
 
-import java.util.Scanner;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
- * Servizio che coordina la logica di gioco.
- * Gestisce il flusso della partita, i turni di combattimento
- * e il salvataggio/caricamento tramite SalvataggioService.
+ * Servizio applicativo che coordina la logica di gioco,
+ * indipendentemente dall'interfaccia che lo utilizza (GUI, CLI, ...).
+ * Comunica gli eventi tramite un logger iniettabile invece di
+ * dipendere direttamente da System.out o da componenti grafici.
  */
 public class PartitaService {
 
-    private GestorePartita partita;
     private final SalvataggioService salvataggioService;
-    private final Scanner scanner;
+    private Consumer<String> logger = msg -> {}; // no-op di default
 
-    public PartitaService(Scanner scanner) {
-        this.scanner = scanner;
-        this.salvataggioService = new GsonSalvataggioService();
+    private GestorePartita partita;
+    private Nemico nemicoCorrente;
+    private Iterator<Nemico> nemiciIterator;
+
+    public PartitaService(SalvataggioService salvataggioService) {
+        this.salvataggioService = salvataggioService;
     }
 
-    /** Avvia una nuova partita con giocatore di default */
-    public void nuovaPartita() {
+    /** Permette a chi usa il service di ricevere i messaggi di gioco */
+    public void setLogger(Consumer<String> logger) {
+        this.logger = logger;
+    }
+
+    private void log(String messaggio) {
+        logger.accept(messaggio);
+    }
+
+    public void nuovaPartita(String nome, Abilita abilita) {
         Giocatore giocatore = new Giocatore(
-                "Impiegato",
-                100,
-                50,
-                new LaptopAziendale(),
-                new PausaCaffe(),
-                new Inventario()
+                nome, 100, 50,
+                new LaptopAziendale(), abilita, new Inventario()
         );
         giocatore.getInventario().aggiungiOggetto(new Snack());
         giocatore.getInventario().aggiungiOggetto(new ChiavettaUsb());
@@ -45,157 +52,133 @@ public class PartitaService {
         for (Stanza s : StanzaFactory.creaCampagna()) {
             partita.aggiungiStanza(s);
         }
-
-        System.out.println("\nNuova partita avviata!");
-        eseguiPartita();
+        iniziaStanza();
     }
 
-    /** Carica una partita salvata e la riprende */
     public void caricaPartita() {
-        if (!salvataggioService.esisteSalvataggio()) {
-            System.out.println("Nessun salvataggio trovato!");
+        partita = GestorePartita.ripristinaDaStato(salvataggioService.carica());
+        iniziaStanza();
+    }
+
+    private void iniziaStanza() {
+        Stanza stanza = partita.getStanzaAttuale();
+        log("Sei entrato in: " + stanza.getNome());
+        nemiciIterator = stanza.getNemici().iterator();
+        prossimoNemico();
+    }
+
+    private void prossimoNemico() {
+        while (nemiciIterator.hasNext()) {
+            Nemico n = nemiciIterator.next();
+            if (n.getVitaCorrente() > 0) {
+                nemicoCorrente = n;
+                log("\nAppare: " + n.getNome() + " | HP: " + n.getVitaCorrente());
+                return;
+            }
+        }
+        nemicoCorrente = null;
+        stanzaCompletata();
+    }
+
+    private void stanzaCompletata() {
+        log("\nStanza completata!");
+        for (Oggetto o : partita.getStanzaAttuale().getOggetti()) {
+            partita.getGiocatore().getInventario().aggiungiOggetto(o);
+            log("Hai trovato: " + o.nome());
+        }
+        if (!partita.isFinale()) {
+            partita.avanza();
+            iniziaStanza();
+        }
+        // se è la stanza finale, isPartitaVinta() lo segnalerà a chi chiama
+    }
+
+    public void attacca() {
+        eseguiTurno(() -> {
+            partita.getGiocatore().attacca(nemicoCorrente);
+            log(">> Attacchi " + nemicoCorrente.getNome()
+                    + "! HP rimasti: " + nemicoCorrente.getVitaCorrente());
+        });
+    }
+
+    public void usaAbilita() {
+        eseguiTurno(() -> {
+            Giocatore g = partita.getGiocatore();
+            Abilita abilita = g.getAbilita();
+            if (g.getEnergiaCorrente() >= abilita.costoEnergia()) {
+                g.setEnergiaCorrente(g.getEnergiaCorrente() - abilita.costoEnergia());
+                abilita.usa(g, nemicoCorrente);
+                log(">> Usi " + abilita.nome() + "! HP nemico: "
+                        + nemicoCorrente.getVitaCorrente());
+            } else {
+                log(">> Energia insufficiente! Turno perso.");
+            }
+        });
+    }
+
+    public void usaOggetto(int indice) {
+        eseguiTurno(() -> {
+            Oggetto oggetto = partita.getGiocatore().getInventario().getOggetti().get(indice);
+            partita.getGiocatore().getInventario().usaOggetto(indice, partita.getGiocatore());
+            log(">> Usi " + oggetto.nome() + "!");
+        });
+    }
+
+    private void eseguiTurno(Runnable azioneGiocatore) {
+        if (nemicoCorrente == null || partita.getGiocatore().getVitaCorrente() <= 0) return;
+
+        azioneGiocatore.run();
+
+        if (nemicoCorrente.getVitaCorrente() <= 0) {
+            log(">> " + nemicoCorrente.getNome() + " sconfitto!");
+            prossimoNemico();
             return;
         }
-        partita = GestorePartita.ripristinaDaStato(salvataggioService.carica());
-        System.out.println("\nPartita caricata!");
-        eseguiPartita();
+
+        nemicoCorrente.attacca(partita.getGiocatore());
+        log(">> " + nemicoCorrente.getNome() + " ti attacca! HP rimasti: "
+                + partita.getGiocatore().getVitaCorrente());
     }
 
-    /** Salva lo stato corrente della partita */
     public void salva() {
         salvataggioService.salva(partita.esportaStato());
     }
 
-    /** Loop principale della partita */
-    private void eseguiPartita() {
-        Giocatore giocatore = partita.getGiocatore();
+    // ===== stato esposto per la UI =====
 
-        System.out.println("Benvenuto, " + giocatore.getNome() + "!");
-        System.out.println("Sopravvivi all'ufficio e sconfiggi il Direttore!");
-
-        while (giocatore.getVitaCorrente() > 0) {
-
-            Stanza stanza = partita.getStanzaAttuale();
-            System.out.println("\n>>> Stanza " + partita.getNumeroStanzaCorrente()
-                    + "/" + partita.getTotaleStanze() + ": " + stanza.getNome());
-
-            if (partita.isFinale()) {
-                System.out.println("*** STANZA BOSS! ***");
-            }
-
-            // combatti ogni nemico della stanza
-            for (Nemico nemico : stanza.getNemici()) {
-
-                System.out.println("\nAppare: " + nemico.getNome()
-                        + " | HP: " + nemico.getVitaCorrente());
-
-                while (giocatore.getVitaCorrente() > 0 && nemico.getVitaCorrente() > 0) {
-                    eseguiTurno(giocatore, nemico);
-                }
-
-                if (giocatore.getVitaCorrente() <= 0) break;
-                System.out.println(">> " + nemico.getNome() + " sconfitto!");
-            }
-
-            if (giocatore.getVitaCorrente() <= 0) {
-                System.out.println("\n=== HAI PERSO! Sei stato licenziato. ===");
-                return;
-            }
-
-            // raccogli oggetti della stanza
-            for (Oggetto o : stanza.getOggetti()) {
-                System.out.println("Hai trovato: " + o.nome());
-                giocatore.getInventario().aggiungiOggetto(o);
-            }
-
-            if (partita.isFinale()) {
-                System.out.println("\n=== HAI VINTO! Il Direttore è stato sconfitto! ===");
-                return;
-            }
-
-            // versione corretta: avanza PRIMA di salvare
-            System.out.println("\nStanza completata!");
-            System.out.println("1 - Avanza alla prossima stanza");
-            System.out.println("2 - Salva ed avanza");
-            System.out.println("3 - Salva ed esci");
-
-            int sceltaStanza = scanner.nextInt();
-            scanner.nextLine();
-
-            partita.avanza(); // avanza sempre, la stanza è completata
-
-            switch (sceltaStanza) {
-                case 2 -> salva();             // salva dopo aver avanzato
-                case 3 -> {
-                    salva();
-                    return;
-                } // salva dopo aver avanzato, poi esci
-            }
-        }
+    public Giocatore getGiocatore() {
+        return partita.getGiocatore();
     }
 
-    /** Gestisce un singolo turno di combattimento */
-    private void eseguiTurno(Giocatore giocatore, Nemico nemico) {
+    public Nemico getNemicoCorrente() {
+        return nemicoCorrente;
+    }
 
-        System.out.println("\n---------------------------");
-        System.out.println("[" + giocatore.getNome() + "]"
-                + " HP: " + giocatore.getVitaCorrente() + "/" + giocatore.getVitaMassima()
-                + " | Energia: " + giocatore.getEnergiaCorrente() + "/" + giocatore.getEnergiaMassima()
-                + " | Arma: " + giocatore.getArma().getClass().getSimpleName()
-                + " (danno: " + giocatore.getArma().calcolaDanno() + ")");
-        System.out.println("[" + nemico.getNome() + "]"
-                + " HP: " + nemico.getVitaCorrente() + "/" + nemico.getVitaMassima());
-        System.out.println("---------------------------");
+    public String getNomeStanzaCorrente() {
+        return partita.getStanzaAttuale().getNome();
+    }
 
-        Abilita abilita = giocatore.getAbilita();
+    public int getNumeroStanzaCorrente() {
+        return partita.getNumeroStanzaCorrente();
+    }
 
-        System.out.println("Cosa fai?");
-        System.out.println("1 - Attacca (" + giocatore.getArma().calcolaDanno() + " danno)");
-        System.out.println("2 - Abilita: " + abilita.nome()
-                + " (costo: " + abilita.costoEnergia() + " energia)");
-        System.out.println("3 - Usa oggetto inventario");
+    public int getTotaleStanze() {
+        return partita.getTotaleStanze();
+    }
 
-        int scelta = scanner.nextInt();
+    public boolean isStanzaBoss() {
+        return partita.isFinale();
+    }
 
-        switch (scelta) {
+    public List<Oggetto> getInventario() {
+        return partita.getGiocatore().getInventario().getOggetti();
+    }
 
-            case 1 -> {
-                giocatore.attacca(nemico);
-                System.out.println(">> Attacchi " + nemico.getNome()
-                        + "! HP rimasti: " + nemico.getVitaCorrente());
-            }
+    public boolean isPartitaVinta() {
+        return partita.isFinale() && nemicoCorrente == null;
+    }
 
-            case 2 -> {
-                if (giocatore.getEnergiaCorrente() >= abilita.costoEnergia()) {
-                    giocatore.setEnergiaCorrente(
-                            giocatore.getEnergiaCorrente() - abilita.costoEnergia()
-                    );
-                    abilita.usa(giocatore, nemico);
-                    System.out.println(">> Usi " + abilita.nome() + "!");
-                    System.out.println("   HP giocatore: " + giocatore.getVitaCorrente()
-                            + " | HP nemico: " + nemico.getVitaCorrente());
-                } else {
-                    System.out.println(">> Energia insufficiente! Turno perso.");
-                }
-            }
-
-            case 3 -> {
-                giocatore.getInventario().mostraInventario();
-                System.out.print("Indice oggetto (o -1 per annullare): ");
-                int idx = scanner.nextInt();
-                if (idx >= 0) {
-                    giocatore.getInventario().usaOggetto(idx, giocatore);
-                }
-            }
-
-            default -> System.out.println(">> Scelta non valida, turno perso!");
-        }
-
-        // risposta del nemico
-        if (nemico.getVitaCorrente() > 0) {
-            nemico.attacca(giocatore);
-            System.out.println(">> " + nemico.getNome() + " ti attacca! "
-                    + "HP rimasti: " + giocatore.getVitaCorrente());
-        }
+    public boolean isPartitaPersa() {
+        return partita.getGiocatore().getVitaCorrente() <= 0;
     }
 }
