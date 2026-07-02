@@ -7,8 +7,11 @@ public class OggettoFactory {
             case "Snack"           -> new Snack();
             case "ChiavettaUsb"    -> new ChiavettaUsb();
             case "ManualeAziendale"-> new ManualeAziendale();
+            case "RaccogliBadgeAziendale"  -> new RaccogliBadgeAziendale();
+            case "RaccogliLaptopAziendale" -> new RaccogliLaptopAziendale();
             default -> throw new IllegalArgumentException("Oggetto sconosciuto: " + classe);
         };
     }
+
 
 }

@@ -1,23 +1,24 @@
 {
-  "nomeGiocatore": "Impiegato",
-  "vitaCorrente": 87,
-  "vitaMassima": 100,
-  "energiaCorrente": 50,
-  "energiaMassima": 50,
-  "armaNome": "LaptopAziendale",
+  "nomeGiocatore": "gff",
+  "vitaCorrente": 115,
+  "vitaMassima": 115,
+  "energiaCorrente": 60,
+  "energiaMassima": 60,
+  "armaNome": "Penna",
   "armaLivello": 1,
-  "abilitaNome": "PausaCaffe",
+  "abilitaNome": "PremioProduzione",
   "inventario": [
     "Snack",
-    "ChiavettaUsb",
-    "Snack"
+    "RaccogliBadgeAziendale",
+    "Snack",
+    "ManualeAziendale"
   ],
-  "livello": 1,
-  "esperienzaCorrente": 15,
-  "esperienzaPerLivello": 30,
-  "stanzaCorrente": 1,
+  "livello": 2,
+  "esperienzaCorrente": 0,
+  "esperienzaPerLivello": 45,
+  "stanzaCorrente": 2,
   "hpNemiciStanzaCorrente": [
-    20,
-    35
+    50,
+    30
   ]
 }

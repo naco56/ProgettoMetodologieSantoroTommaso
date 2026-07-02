@@ -12,12 +12,12 @@ public class LavoroStraordinario implements Abilita {
 
     @Override
     public int effetto() {
-        return 20;
+        return 30;
     }
 
     @Override
     public int costoEnergia() {
-        return 40;
+        return 30;
     }
 
 

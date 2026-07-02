@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg129078.applicazione;
 import it.unicam.cs.mpgc.rpg129078.model.*;
 import it.unicam.cs.mpgc.rpg129078.model.abilita.Abilita;
 import it.unicam.cs.mpgc.rpg129078.model.arma.LaptopAziendale;
+import it.unicam.cs.mpgc.rpg129078.model.arma.Penna;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.ChiavettaUsb;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.Oggetto;
 import it.unicam.cs.mpgc.rpg129078.model.oggetto.Snack;
@@ -46,10 +47,10 @@ public class PartitaService {
     public void nuovaPartita(String nome, Abilita abilita) {
         Giocatore giocatore = new Giocatore(
                 nome, 100, 50,
-                new LaptopAziendale(), abilita, new Inventario()
+                new Penna(), abilita, new Inventario()
         );
         giocatore.getInventario().aggiungiOggetto(new Snack());
-        giocatore.getInventario().aggiungiOggetto(new ChiavettaUsb());
+        // ChiavettaUsb si trova in stanza 5, non si parte con essa
 
         partita = new GestorePartita(giocatore);
         for (Stanza s : StanzaFactory.creaCampagna()) {
@@ -57,7 +58,6 @@ public class PartitaService {
         }
         iniziaStanza();
     }
-
     public void caricaPartita() {
         partita = GestorePartita.ripristinaDaStato(salvataggioService.carica());
         iniziaStanza();

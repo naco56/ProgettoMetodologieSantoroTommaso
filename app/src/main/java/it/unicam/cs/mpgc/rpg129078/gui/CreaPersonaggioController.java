@@ -23,11 +23,11 @@ public class CreaPersonaggioController {
     @FXML private Label lblDescrizione;
 
     private static final String DESC_PAUSA =
-            "Pausa Caffe: recupera 15 HP. Ideale per resistere a lungo in battaglia.";
+            "Pausa Caffe: recupera 25 HP per 20 energia. Ideale per resistere a lungo.";
     private static final String DESC_PREMIO =
-            "Premio Produzione: infligge 10 danni al nemico e cura 5 HP. Bilanciata.";
+            "Premio Produzione: infligge 15 danni e cura 7 HP per 25 energia. Bilanciata.";
     private static final String DESC_LAVORO =
-            "Lavoro Straordinario: infligge 20 danni. Massimo attacco, nessuna cura.";
+            "Lavoro Straordinario: infligge 30 danni per 30 energia. Massimo attacco.";
 
     @FXML
     public void initialize() {

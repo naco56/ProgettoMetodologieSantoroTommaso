@@ -12,12 +12,12 @@ public class PremioProduzione implements Abilita {
 
     @Override
     public int effetto() {
-        return 10;
+        return 15;
     }
 
     @Override
     public int costoEnergia() {
-        return 20;
+        return 25;
     }
 
     public void usa(Giocatore giocatore, Nemico nemico) {
