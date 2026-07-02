@@ -27,6 +27,9 @@ public class PartitaService {
     private Nemico nemicoCorrente;
     private Iterator<Nemico> nemiciIterator;
 
+    private boolean aumentoLivelloAvvenuto = false;
+    private String messaggioAumentoLivello = "";
+
     public PartitaService(SalvataggioService salvataggioService) {
         this.salvataggioService = salvataggioService;
     }
@@ -131,6 +134,19 @@ public class PartitaService {
 
         if (nemicoCorrente.getVitaCorrente() <= 0) {
             log(">> " + nemicoCorrente.getNome() + " sconfitto!");
+
+            // EXP in base al tipo di nemico
+            int exp = nemicoCorrente.getTipo() == TipoNemico.BOSS ? 50 : 15;
+            boolean levelUp = partita.getGiocatore().guadagnaEsperienza(exp);
+
+            if (levelUp) {
+                aumentoLivelloAvvenuto = true;
+                messaggioAumentoLivello = "LIVELLO AUMENTATO! Sei al livello "
+                        + partita.getGiocatore().getLivello()
+                        + " — HP e Energia aumentati e ripristinati!";
+                log("\n★ " + messaggioAumentoLivello);
+            }
+
             prossimoNemico();
             return;
         }
@@ -140,11 +156,23 @@ public class PartitaService {
                 + partita.getGiocatore().getVitaCorrente());
     }
 
+    public boolean aumentoAvvenuto() {
+        boolean val = aumentoLivelloAvvenuto;
+        aumentoLivelloAvvenuto = false; // reset dopo la lettura
+        return val;
+    }
+
+    public String getMessaggioAumento() { return messaggioAumentoLivello; }
+
+    public int getLivelloGiocatore() { return partita.getGiocatore().getLivello(); }
+    public int getEspCorrente() { return partita.getGiocatore().getEsperienzaCorrente(); }
+    public int getEspPerLivello() { return partita.getGiocatore().getEsperienzaPerLivello(); }
+
     public void salva() {
         salvataggioService.salva(partita.esportaStato());
     }
 
-    // ===== stato esposto per la UI =====
+
 
     public Giocatore getGiocatore() {
         return partita.getGiocatore();

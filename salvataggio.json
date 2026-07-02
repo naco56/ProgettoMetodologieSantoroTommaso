@@ -1,19 +1,23 @@
 {
-  "nomeGiocatore": "sss",
-  "vitaCorrente": 84,
+  "nomeGiocatore": "Impiegato",
+  "vitaCorrente": 87,
   "vitaMassima": 100,
-  "energiaCorrente": 25,
+  "energiaCorrente": 50,
   "energiaMassima": 50,
   "armaNome": "LaptopAziendale",
-  "armaLivello": 2,
+  "armaLivello": 1,
   "abilitaNome": "PausaCaffe",
   "inventario": [
     "Snack",
+    "ChiavettaUsb",
     "Snack"
   ],
+  "livello": 1,
+  "esperienzaCorrente": 15,
+  "esperienzaPerLivello": 30,
   "stanzaCorrente": 1,
   "hpNemiciStanzaCorrente": [
-    45,
+    20,
     35
   ]
 }

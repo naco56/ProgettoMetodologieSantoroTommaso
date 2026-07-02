@@ -70,6 +70,9 @@ public class GestorePartita {
         stato.armaLivello     = giocatore.getArma().getLivello();
         stato.abilitaNome     = giocatore.getAbilita().getClass().getSimpleName();
         stato.stanzaCorrente  = stanzaCorrente;
+        stato.livello = giocatore.getLivello();
+        stato.esperienzaCorrente = giocatore.getEsperienzaCorrente();
+        stato.esperienzaPerLivello = giocatore.getEsperienzaPerLivello();
         stato.inventario = giocatore.getInventario().getOggetti()
                 .stream()
                 .map(o -> o.getClass().getSimpleName())
@@ -95,6 +98,9 @@ public class GestorePartita {
         );
         giocatore.setVitaCorrente(stato.vitaCorrente);
         giocatore.setEnergiaCorrente(stato.energiaCorrente);
+        giocatore.setLivello(stato.livello);
+        giocatore.setEsperienzaCorrente(stato.esperienzaCorrente);
+        giocatore.setEsperienzaPerLivello(stato.esperienzaPerLivello);
 
         for (String classe : stato.inventario) {
             giocatore.getInventario().aggiungiOggetto(OggettoFactory.crea(classe));

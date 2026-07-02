@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 import java.util.List;
 
+
 /**
  * Controller della schermata di gioco (solo presentazione).
  * Tutta la logica di gioco è delegata a PartitaService, in modo che
@@ -31,6 +32,7 @@ public class GiocoController {
     @FXML private Button btnAbilita;
     @FXML private Button btnInventario;
     @FXML private Button btnSalvaEsci;
+    @FXML private Label lblEsperienza;
 
     private final PartitaService service = new PartitaService(new GsonSalvataggioService());
 
@@ -97,6 +99,15 @@ public class GiocoController {
 
     private void dopoAzione() {
         aggiornaUI();
+
+        if (service.aumentoAvvenuto()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Level Up!");
+            alert.setHeaderText("★ Sei salito di livello!");
+            alert.setContentText(service.getMessaggioAumento());
+            alert.showAndWait();
+        }
+
         if (service.isPartitaPersa()) {
             mostraFinePartita(false);
         } else if (service.isPartitaVinta()) {
@@ -151,6 +162,10 @@ public class GiocoController {
         } else {
             lblNemico.setText("");
         }
+        lblEsperienza.setText("LV " + service.getLivelloGiocatore()
+                + " | EXP: " + service.getEspCorrente()
+                + "/" + service.getEspPerLivello());
+
     }
 
     private void abilitaPulsanti(boolean abilita) {

@@ -19,6 +19,7 @@
             <HBox spacing="20">
                 <Label fx:id="lblGiocatore" text="[Giocatore] HP: - | Energia: -"/>
                 <Label fx:id="lblNemico" text="[Nemico] HP: -"/>
+                <Label fx:id="lblEsperienza" text="LV 1 | EXP: 0/30"/>
             </HBox>
         </VBox>
     </top>

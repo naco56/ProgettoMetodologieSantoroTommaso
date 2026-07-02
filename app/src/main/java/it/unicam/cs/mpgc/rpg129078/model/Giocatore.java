@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg129078.model;
 
 import it.unicam.cs.mpgc.rpg129078.model.abilita.Abilita;
 import it.unicam.cs.mpgc.rpg129078.model.arma.Arma;
+import it.unicam.cs.mpgc.rpg129078.model.arma.Potenziabile;
 
 public class Giocatore {
 
@@ -18,8 +19,12 @@ public class Giocatore {
 
     private Inventario inventario;
 
+    private int livello;
+    private int esperienzaCorrente;
+    private int esperienzaPerLivello;
 
-    public Giocatore(String nome, int vitaMassima, int energiaMassima, Arma arma, Abilita abilita,Inventario inventario) {
+
+    public Giocatore(String nome, int vitaMassima, int energiaMassima, Arma arma, Abilita abilita, Inventario inventario) {
         this.nome = nome;
 
         this.vitaMassima = vitaMassima;
@@ -32,6 +37,10 @@ public class Giocatore {
         this.abilita = abilita;
 
         this.inventario = inventario;
+
+        this.livello = 1;
+        this.esperienzaCorrente = 0;
+        this.esperienzaPerLivello = 30;
     }
 
 
@@ -67,6 +76,18 @@ public class Giocatore {
         return inventario;
     }
 
+    public int getLivello() {
+        return livello;
+    }
+
+    public int getEsperienzaCorrente() {
+        return esperienzaCorrente;
+    }
+
+    public int getEsperienzaPerLivello() {
+        return esperienzaPerLivello;
+    }
+
 
     public void setVitaCorrente(int vitaCorrente) {
         this.vitaCorrente = Math.max(0, Math.min(vitaCorrente, vitaMassima));
@@ -84,6 +105,17 @@ public class Giocatore {
         this.abilita = abilita;
     }
 
+    public void setLivello(int livello) {
+        this.livello = livello;
+    }
+
+    public void setEsperienzaCorrente(int exp) {
+        this.esperienzaCorrente = exp;
+    }
+
+    public void setEsperienzaPerLivello(int exp) {
+        this.esperienzaPerLivello = exp;
+    }
 
     public void setVitaMassima(int vitaMassima) {
         this.vitaMassima = vitaMassima;
@@ -110,6 +142,30 @@ public class Giocatore {
         System.out.println("Attacco inflitto: " + danno);
     }
 
+
+    public boolean guadagnaEsperienza(int quantita) {
+        esperienzaCorrente += quantita;
+        if (esperienzaCorrente >= esperienzaPerLivello) {
+            aumentoLivello();
+            return true;
+        }
+        return false;
+    }
+
+
+    private void aumentoLivello() {
+        livello++;
+        esperienzaCorrente = 0;
+        esperienzaPerLivello = (int) (esperienzaPerLivello * 1.5);
+
+        vitaMassima += 15;
+        vitaCorrente = vitaMassima; // cura completa al level up
+        energiaMassima += 10;
+        energiaCorrente = energiaMassima;
+
+
+    }
 }
+
 
 
